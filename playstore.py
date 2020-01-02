@@ -27,6 +27,7 @@ for comments in subreddit.stream.comments():
             tosplit = body.split('linkme:')
             after_linkme = tosplit[1]
             search_terms = after_linkme.split('.')[0]
+            logging.info("{} is searching for: {}".format(comments.author.name, search_terms))
             for search in search_terms.split(','):
                 result = play.search(search,page=1, detailed=True)
                 if not result:
@@ -56,7 +57,7 @@ for comments in subreddit.stream.comments():
                 message+="\n\n\n\n---\n\n\n\nBasic Google Play links bot by /u/lonerzboy"
                 comments.reply(message)
                 logging.info('{} searched for game successfully.'.format(comments.author.name))
-                print('{} searched for game successfully.'.format(comments.author.name))
+                print('{} searched completed successfully.'.format(comments.author.name))
                 #print("{} searched for app successfully.".format(comments.author.name))
             else:
                 logging.info("{} searched for a empty game.".format(comments.author.name))
