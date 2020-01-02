@@ -1,3 +1,5 @@
+#!/home/sziyan/bots/reddit/gplay/venv/bin python3
+
 import praw
 import time
 import play_scraper as play
@@ -39,9 +41,9 @@ for comments in subreddit.stream.comments():
                     description = result.get('description')
                     description = description.split(" ")
                     desc_output = " ".join(description[0:26]) + " ..."
-                    msg = "**[{}](https://play.google.com{})** by {} | {} | {} installs \n\n> {}".format(title,url,developer,price,installs,desc_output)
+                    msg = "**[{}]({})** by {} | {} | {} installs \n\n> {}".format(title,url,developer,price,installs,desc_output)
                 else:
-                    msg = "[{}](https://play.google.com{}) - {} - [Search manually]({}) \n\n".format(title,url, price, search_manual)
+                    msg = "[{}]({}) - {} - [Search manually]({}) \n\n".format(title,url, price, search_manual)
                 message+=msg
             if message != "":
                 message+="\n\n\n\n---\n\n\n\nBasic Google Play links bot by /u/lonerzboy"
