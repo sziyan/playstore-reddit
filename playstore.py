@@ -1,14 +1,21 @@
 #!/home/sziyan/bots/reddit/gplay/venv/bin python3
 
+import logging
 import praw
 import time
 import play_scraper as play
 from config import Config
 
+logging.basicConfig(level=logging.INFO, filename='output.log', filemode='a', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logging.info("Bot started successfully")
+
 reddit = praw.Reddit(client_id=Config.client_id, client_secret=Config.client_secret, username=Config.username, password=Config.password, user_agent=Config.user_agent)
+logging.info("PRAW instantiated successfully.")
 
 subreddit = reddit.subreddit(Config.subreddit)
 start_time = time.time()
+
+logging.info("Waiting for comments.")
 
 for comments in subreddit.stream.comments():
     if comments.created_utc < start_time or comments.author == 'GooglePlay_Links':
@@ -48,8 +55,11 @@ for comments in subreddit.stream.comments():
             if message != "":
                 message+="\n\n\n\n---\n\n\n\nBasic Google Play links bot by /u/lonerzboy"
                 comments.reply(message)
-                print("{} searched for app successfully.".format(comments.author.name))
+                logging.info('{} searched for game successfully.'.format(comments.author.name))
+                print('{} searched for game successfully.'.format(comments.author.name))
+                #print("{} searched for app successfully.".format(comments.author.name))
             else:
+                logging.info("{} searched for a empty game.".format(comments.author.name))
                 continue
         else:
             continue
