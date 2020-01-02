@@ -1,38 +1,53 @@
 import praw
 import time
 import play_scraper as play
+from config import Config
 
-reddit = praw.Reddit(client_id='kn_3nXzENsvUjQ', client_secret='1CLsrd4FIdoUEC0ga0tU4vuP-CM', username='lonerzboy', password='Flaming906', user_agent='PLaystore Bot')
+reddit = praw.Reddit(client_id=Config.client_id, client_secret=Config.client_secret, username=Config.username, password=Config.password, user_agent=Config.user_agent)
 
-subreddit = reddit.subreddit('sziyan_testing')
+subreddit = reddit.subreddit(Config.subreddit)
 start_time = time.time()
 
-
-
-
 for comments in subreddit.stream.comments():
-    if comments.created_utc < start_time:
+    if comments.created_utc < start_time or comments.author == 'GooglePlay_Links':
         continue
     else:
         body = comments.body
         if 'linkme:' in body:
+            message = ""
             tosplit = body.split('linkme:')
             after_linkme = tosplit[1]
-            search_terms = after_linkme.split('\n')[0]
-            print(search_terms)
-            result = play.search(search_terms,page=1)[0]
-            title = result.get('title')
-            price = result.get('price')
-            score = result.get('score')
-            url = result.get('url')
-            if result.get('free') is True:
-                price = 'Free'
+            search_terms = after_linkme.split('.')[0]
+            for search in search_terms.split(','):
+                result = play.search(search,page=1, detailed=True)
+                if not result:
+                    continue
+                result = result[0]
+                title = result.get('title')
+                score = result.get('score')
+                url = result.get('url')
+                search_manual = 'https://play.google.com/store/search?q={}'.format(search)
+                if result.get('free') is True:
+                    price = 'Free'
+                else:
+                    price = result.get('price')
+                if result.get('iap') is True:
+                    price+= ' with IAP'
+                if len(search_terms.split(',')) == 1:
+                    developer = result.get('developer')
+                    installs = result.get('installs')
+                    description = result.get('description')
+                    description = description.split(" ")
+                    desc_output = " ".join(description[0:26]) + " ..."
+                    msg = "**[{}](https://play.google.com{})** by {} | {} | {} installs \n\n> {}".format(title,url,developer,price,installs,desc_output)
+                else:
+                    msg = "[{}](https://play.google.com{}) - {} - [Search manually]({}) \n\n".format(title,url, price, search_manual)
+                message+=msg
+            if message != "":
+                message+="\n\n\n\n---\n\n\n\nBasic Google Play links bot by /u/lonerzboy"
+                comments.reply(message)
+                print("{} searched for app successfully.".format(comments.author.name))
             else:
-                price = result.get('price')
-            print(url)
-            message = "**Title:**{}\n\n**Price:** {}\n\n[Google Play](https://play.google.com{})".format(title,price,url)
-            comments.reply(message)
-            print("Comment added successfully.")
-            continue
+                continue
         else:
-            print("nothing to search")
+            continue

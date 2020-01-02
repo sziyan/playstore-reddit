@@ -1,8 +1,9 @@
 import play_scraper as play
 
-search='clash of clans'
+search='sjfhskjbfwekrjhuisdyfs'
 
-result = play.search(search)[0]
-
-score = result.get('score')
-print(result)
+result = play.search(search)
+if result:
+    print(result[0])
+else:
+    print("error")
