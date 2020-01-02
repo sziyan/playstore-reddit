@@ -21,7 +21,7 @@ for comments in subreddit.stream.comments():
     if comments.created_utc < start_time or comments.author == Config.username:
         continue
     else:
-        body = comments.body
+        body = comments.body.lower()
         if 'linkme:' in body:
             message = ""
             tosplit = body.split('linkme:')
