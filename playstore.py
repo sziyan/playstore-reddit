@@ -18,7 +18,7 @@ start_time = time.time()
 logging.info("Waiting for comments.")
 
 for comments in subreddit.stream.comments():
-    if comments.created_utc < start_time or comments.author == 'GooglePlay_Links':
+    if comments.created_utc < start_time or comments.author == Config.username:
         continue
     else:
         body = comments.body
