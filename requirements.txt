@@ -3,8 +3,10 @@ certifi==2019.11.28
 cffi==1.13.2
 chardet==3.0.4
 cryptography==2.8
+html2text==2019.9.26
 idna==2.8
 lxml==4.4.2
+Markdown==3.1.1
 play-scraper==0.6.0
 praw==6.4.0
 prawcore==1.0.1
