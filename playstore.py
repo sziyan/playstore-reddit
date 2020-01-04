@@ -91,7 +91,7 @@ for comments in subreddit.stream.comments(skip_existing=True):
                         count+=1
                         message+=msg
                     if message != "":
-                        message+="\n\n\n\n --- \n\n\n\n \n\nI am a new bot. Please help me by private messaging me any bugs you see. Thank You. \n\nGoogle Play links bot by /u/lonerzboy"
+                        message+="\n\n\n\n --- \n\n\n\n \n\nI am a new bot. Please help me by private messaging me any bugs you see. Thank You."
                         comments.reply(message)
                         logging.info('{} completed app search successfully.'.format(comments.author.name))
                         print('{} completed app search successfully.'.format(comments.author.name))
