@@ -13,7 +13,7 @@ logging.info("Bot started successfully")
 
 reddit = praw.Reddit(client_id=Config.client_id, client_secret=Config.client_secret, username=Config.username, password=Config.password, user_agent=Config.user_agent)
 subreddit = reddit.subreddit("+".join(Config.subreddit))
-logging.info("Watching {} subreddit.".format(",").join(Config.subreddit))
+logging.info("Watching {} subreddit.".format((",").join(Config.subreddit)))
 logging.info("Waiting for comments...")
 
 
