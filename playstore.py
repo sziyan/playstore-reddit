@@ -46,6 +46,7 @@ def get_all_app_requests(linkme_requests):
 for comments in subreddit.stream.comments(skip_existing=True):
     if comments.author.name == Config.username:
     #if comments.author.name == 'test':
+        print("Same username as bot.")
         continue
     else:
         try:
@@ -71,7 +72,10 @@ for comments in subreddit.stream.comments(skip_existing=True):
                         continue
                     result = result[0]
                     title = result.get('title')
-                    score = result.get('score')
+                    if result.get('score') is None:
+                        score = "No rating"
+                    else:
+                        score = result.get('score') + ' rating'
                     url = result.get('url')
                     search_manual = 'https://play.google.com/store/search?q={}'.format(search)
                     if result.get('free') is True:
@@ -85,10 +89,10 @@ for comments in subreddit.stream.comments(skip_existing=True):
                         installs = result.get('installs')
                         description = result.get('description')
                         description = description.split(" ")
-                        desc_output = " ".join(description[0:26]) + " ..."
-                        msg = "**[{}]({})** | {} rating | {} | {} installs | [Search manually]({}) \n\n> {}".format(title,url,score,price,installs,search_manual,desc_output)
+                        desc_output = " ".join(description[0:35]) + " ..."
+                        msg = "**[{}]({})** | {}  | {} | {} downloads | [Search manually]({}) \n\n> {}".format(title,url,score,price,installs,search_manual,desc_output)
                     else:
-                        msg = "[{}]({}) - {} rating - {} - [Search manually]({}) \n\n".format(title,url,score,price,search_manual)
+                        msg = "[{}]({}) - {} - {} - [Search manually]({}) \n\n".format(title,url,score,price,search_manual)
                     count+=1
                     message+=msg
                 if message != "":

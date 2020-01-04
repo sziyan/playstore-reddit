@@ -1,5 +1,5 @@
 import play_scraper as play
 
-result = play.search('another eden',page=1, detailed=True)[0]
+result = play.search('sword of ditto',page=1, detailed=True)[0]
 
-print(result.get('score'))
+print(result.get('title'))
