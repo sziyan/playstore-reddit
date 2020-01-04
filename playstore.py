@@ -9,7 +9,7 @@ import html2text
 import play_scraper as play
 from config import Config
 
-logging.basicConfig(level=logging.INFO, filename='output.log', filemode='a', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(level=logging.INFO, filename='output.log', filemode='a', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%d-%b-%y %I:%M:%S %p')
 logging.info("Bot started successfully")
 
 reddit = praw.Reddit(client_id=Config.client_id, client_secret=Config.client_secret, username=Config.username, password=Config.password, user_agent=Config.user_agent)
@@ -68,7 +68,7 @@ for comments in subreddit.stream.comments(skip_existing=True):
                         continue
                     result = play.search(search,page=1, detailed=True)
                     if not result:
-                        logging.warning("{} search for {} returned no result.".format(comments.author.name,search))
+                        logging.info("{} search for {} returned no result.".format(comments.author.name,search))
                         continue
                     result = result[0]
                     title = result.get('title')
