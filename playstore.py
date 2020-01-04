@@ -44,7 +44,7 @@ def get_all_app_requests(linkme_requests):
     return apps_list
 
 for comments in subreddit.stream.comments(skip_existing=True):
-    if comments.author.name == 'test': #Config.username:
+    if comments.author.name == Config.username:
         continue
     else:
         try:
