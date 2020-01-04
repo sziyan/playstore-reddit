@@ -43,7 +43,7 @@ def get_all_app_requests(linkme_requests):
     return apps_list
 
 for comments in subreddit.stream.comments(skip_existing=True):
-    if comments.author.name == "GooglePLay_link":
+    if comments.author.name == Config.username:
         continue
     else:
         message = ""
