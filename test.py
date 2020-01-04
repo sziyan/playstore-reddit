@@ -1,12 +1,5 @@
-import markdown
-import html2text
+import play_scraper as play
 
-input_text = "``This is a test!``"
-text_maker = html2text.HTML2Text()
-text_maker.ignore_emphasis = True
-text_maker.IGNORE_ANCHORS = True
-text_maker.IGNORE_IMAGES = True
-text = markdown.markdown(input_text)
-output = text_maker.handle(text)
+result = play.search('another eden',page=1, detailed=True)[0]
 
-print(output)
+print(result.get('score'))

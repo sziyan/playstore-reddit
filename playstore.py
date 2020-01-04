@@ -14,7 +14,7 @@ logging.info("Bot started successfully")
 
 reddit = praw.Reddit(client_id=Config.client_id, client_secret=Config.client_secret, username=Config.username, password=Config.password, user_agent=Config.user_agent)
 subreddit = reddit.subreddit("+".join(Config.subreddit))
-logging.info("Watching {} subreddit.".format((",").join(Config.subreddit)))
+logging.info("Watching /r/{} ...".format((",r/").join(Config.subreddit)))
 logging.info("Waiting for comments...")
 
 
@@ -45,6 +45,7 @@ def get_all_app_requests(linkme_requests):
 
 for comments in subreddit.stream.comments(skip_existing=True):
     if comments.author.name == Config.username:
+    #if comments.author.name == 'test':
         continue
     else:
         try:
@@ -56,16 +57,17 @@ for comments in subreddit.stream.comments(skip_existing=True):
             app_list = get_all_app_requests(link_me_requests)
             count = 1
             if app_count > 0:
-                logging.info("{} is searching for {} app(s): {}".format(comments.author.name, app_count, ",".join(app_list)))
+                logging.info("{} is searching for {} app(s) in /r/{}: {}".format(comments.author.name, app_count,comments.subreddit.display_name, ",".join(app_list)))
                 print("{} is searching for {} app(s): {}".format(comments.author.name, app_count, ",".join(app_list)))
                 if app_count > Config.max_apps:
-                    msg = "You have searched for more then {} apps. I will only link to the first {} apps.\n\n".format(Config.max_apps, Config.max_apps)
+                    msg = "You have searched for more than {} apps. I will only link to the first {} apps.\n\n".format(Config.max_apps, Config.max_apps)
                     message +=msg
                 for search in app_list:
                     if count > Config.max_apps:
                         continue
                     result = play.search(search,page=1, detailed=True)
                     if not result:
+                        logging.warning("{} search for {} returned no result.".format(comments.author.name,search))
                         continue
                     result = result[0]
                     title = result.get('title')
@@ -84,9 +86,9 @@ for comments in subreddit.stream.comments(skip_existing=True):
                         description = result.get('description')
                         description = description.split(" ")
                         desc_output = " ".join(description[0:26]) + " ..."
-                        msg = "**[{}]({})** by {} | {} | {} installs \n\n> {}".format(title,url,developer,price,installs,desc_output)
+                        msg = "**[{}]({})** | {} rating | {} | {} installs | [Search manually]({}) \n\n> {}".format(title,url,score,price,installs,search_manual,desc_output)
                     else:
-                        msg = "[{}]({}) - {} - [Search manually]({}) \n\n".format(title,url, price, search_manual)
+                        msg = "[{}]({}) - {} rating - {} - [Search manually]({}) \n\n".format(title,url,score,price,search_manual)
                     count+=1
                     message+=msg
                 if message != "":
