@@ -8,15 +8,21 @@ import markdown
 import html2text
 import play_scraper as play
 from config import Config
+import requests
 
 logging.basicConfig(level=logging.INFO, filename='output.log', filemode='a', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%d-%b-%y %I:%M:%S %p')
 logging.info("Bot started successfully")
 
 reddit = praw.Reddit(client_id=Config.client_id, client_secret=Config.client_secret, username=Config.username, password=Config.password, user_agent=Config.user_agent)
 subreddit = reddit.subreddit("+".join(Config.subreddit))
-logging.info("Watching /r/{} ...".format((",r/").join(Config.subreddit)))
+logging.info("Watching /r/{} ...".format((",/r/").join(Config.subreddit)))
 logging.info("Waiting for comments...")
 
+def sendtelegram(message):
+    token = Config.token
+    chat_id = Config.chat_id
+    path = 'https://api.telegram.org/bot{}/sendmessage?chat_id={}&parse_mode=html&text={}'.format(token,chat_id,message)
+    r = requests.get(path)
 
 link_me_regex = re.compile("\\blink[\s]*me[\s]*:[\s]*(.*?)(?:\.|;|$)", re.M | re.I)
 
@@ -44,8 +50,8 @@ def get_all_app_requests(linkme_requests):
     return apps_list
 
 for comments in subreddit.stream.comments(skip_existing=True):
-    if comments.author.name == Config.username:
-    #if comments.author.name == 'test':
+    #if comments.author.name == Config.username:
+    if comments.author.name == 'test':
         print("Same username as bot.")
         continue
     else:
@@ -98,6 +104,7 @@ for comments in subreddit.stream.comments(skip_existing=True):
                 if message != "":
                     message+="\n\n\n\n --- \n\n\n\n \n\nI am a new bot. Please help me by private messaging me any bugs you see. Thank You."
                     comments.reply(message)
+                    sendtelegram('<b>{}</b> searched for {} app(s) in <b>/r/{}</b> successfully.'.format(comments.author.name,app_count,comments.subreddit.display_name))
                     logging.info('{} completed app search successfully.'.format(comments.author.name))
                     print('{} completed app search successfully.'.format(comments.author.name))
                 else:
