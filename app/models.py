@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column,Integer,String
+from sqlalchemy import Column,Integer,String, Float
 Base = declarative_base()
 
 class Games(Base):
@@ -8,6 +8,10 @@ class Games(Base):
     title = Column(String, nullable=False)
     link = Column(String, nullable=False)
     count = Column(Integer, nullable=True)
+    rating = Column(Float, nullable=True)
+    price = Column(String, nullable=True)
+    category = Column(String, nullable=True)
+
 
 class Apps(Base):
     __tablename__ = 'apps'
@@ -15,3 +19,6 @@ class Apps(Base):
     title = Column(String, nullable=False)
     link = Column(String, nullable=False)
     count = Column(Integer, nullable=True)
+    rating = Column(Float, nullable=True)
+    price = Column(String, nullable=True)
+    category = Column(String, nullable=True)

@@ -9,8 +9,8 @@ import html2text
 import play_scraper as play
 from config import Config
 import requests
-# from app.models import Games,Apps
-# from app import session
+from app.models import Games,Apps
+from app import session
 
 
 logging.basicConfig(level=logging.INFO, filename='output.log', filemode='a', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%d-%b-%y %I:%M:%S %p')
@@ -22,17 +22,46 @@ logging.info("Watching /r/{} ...".format((",/r/").join(Config.subreddit)))
 logging.info("Waiting for comments...")
 
 
-# def update_games_db(game_title,link):
-#     check_db = session.query(Games).filter_by(title = game_title).first()
-#     if check_db is None: #game does not exist
-#         game = Games(title=game_title, link=link, count=0)
-#         session.add(game)
-#         session.commit()
-#         return 1
-#     else: #game already exist
-#         check_db.count += 1
-#         session.commit()
-#         return 1
+def update_db(subreddit, result):
+    title = result['title']
+    link = result['url']
+    rating = result['score']
+    if result['free']is True:
+        price = 'Free'
+    else:
+        price = result['price']
+    if result['iap'] is True:
+        price += ' with IAP'
+    category_list = result['category']
+    category = ",".join(category_list)
+
+    if subreddit == 'AndroidGaming':
+        check_db = session.query(Games).filter_by(title = title).first()
+        if check_db is None: #game does not exist
+            game = Games(title=title, link=link,rating=rating,price=price,category=category,count=1)
+            session.add(game)
+            session.commit()
+            logging.info('New game {} added to database.'.format(title))
+            return 1
+        else: #game already exist
+            check_db.count += 1
+            session.commit()
+            return 1
+    elif subreddit == 'AndroidApps':
+        check_db = session.query(Apps).filter_by(title=title).first()
+        if check_db is None:
+            app = Apps(title=title, link=link,rating=rating,price=price,category=category,count=1)
+            session.add(app)
+            session.commit()
+            logging.info("New app {} added to database.".format(title))
+            return 1
+        else:
+            check_db.count+=1
+            session.commit()
+            return 1
+    else:
+        logging.warning("Invalid subreddit. This should no happen unless testing!")
+        return 0
 
 def sendtelegram(message):
     token = Config.token
@@ -115,9 +144,9 @@ for comments in subreddit.stream.comments(skip_existing=True):
                         msg = "**[{}]({})** | {}  | {} | {} downloads | [Search manually]({}) \n\n> {}".format(title,url,score,price,installs,search_manual,desc_output)
                     else:
                         msg = "[{}]({}) - {} - {} - [Search manually]({}) \n\n".format(title,url,score,price,search_manual)
-                    # update_db_result = update_games_db(title,url)
-                    # if update_db_result is not 1:
-                    #     logging.warning('Updating of games database failed.')
+                    update_db_result = update_db(comments.subreddit.display_name,result)
+                    if update_db_result is not 1:
+                        logging.warning('Updating of database failed.')
                     count+=1
                     message+=msg
                 if message != "":

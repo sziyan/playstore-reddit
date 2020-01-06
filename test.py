@@ -1,7 +1,5 @@
-from app.models import Games,Apps
-from app import session
+import play_scraper as play
 
-app = Apps(title='Whatsapp', link='https://store.google.com/whatsapp',count=3)
-session.add(app)
-session.commit()
-
+game = 'war and order'
+result = play.search(game,detailed=True,page=1)[0]
+print(result['score'])
