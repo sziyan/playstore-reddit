@@ -1,7 +1,7 @@
-import play_scraper as play
-import praw
-from config import Config
+from app.models import Games,Apps
+from app import session
 
-result =play.search('the quest',detailed=False,page=1)[0]
-print(result['title'])
+app = Apps(title='Whatsapp', link='https://store.google.com/whatsapp',count=3)
+session.add(app)
+session.commit()
 

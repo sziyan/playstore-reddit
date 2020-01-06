@@ -9,6 +9,9 @@ import html2text
 import play_scraper as play
 from config import Config
 import requests
+# from app.models import Games,Apps
+# from app import session
+
 
 logging.basicConfig(level=logging.INFO, filename='output.log', filemode='a', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%d-%b-%y %I:%M:%S %p')
 logging.info("Bot started successfully")
@@ -17,6 +20,19 @@ reddit = praw.Reddit(client_id=Config.client_id, client_secret=Config.client_sec
 subreddit = reddit.subreddit("+".join(Config.subreddit))
 logging.info("Watching /r/{} ...".format((",/r/").join(Config.subreddit)))
 logging.info("Waiting for comments...")
+
+
+# def update_games_db(game_title,link):
+#     check_db = session.query(Games).filter_by(title = game_title).first()
+#     if check_db is None: #game does not exist
+#         game = Games(title=game_title, link=link, count=0)
+#         session.add(game)
+#         session.commit()
+#         return 1
+#     else: #game already exist
+#         check_db.count += 1
+#         session.commit()
+#         return 1
 
 def sendtelegram(message):
     token = Config.token
@@ -99,6 +115,9 @@ for comments in subreddit.stream.comments(skip_existing=True):
                         msg = "**[{}]({})** | {}  | {} | {} downloads | [Search manually]({}) \n\n> {}".format(title,url,score,price,installs,search_manual,desc_output)
                     else:
                         msg = "[{}]({}) - {} - {} - [Search manually]({}) \n\n".format(title,url,score,price,search_manual)
+                    # update_db_result = update_games_db(title,url)
+                    # if update_db_result is not 1:
+                    #     logging.warning('Updating of games database failed.')
                     count+=1
                     message+=msg
                 if message != "":
