@@ -11,6 +11,9 @@ class Games(Base):
     rating = Column(Float, nullable=True)
     price = Column(String, nullable=True)
     category = Column(String, nullable=True)
+    developer = Column(String, nullable=True)
+    iap_range = Column(String, nullable=True)
+    month = Column(String, nullable=True)
 
 
 class Apps(Base):
@@ -22,3 +25,6 @@ class Apps(Base):
     rating = Column(Float, nullable=True)
     price = Column(String, nullable=True)
     category = Column(String, nullable=True)
+    developer = Column(String, nullable=True)
+    iap_range = Column(String, nullable=True)
+    month = Column(String, nullable=True)
