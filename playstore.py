@@ -9,6 +9,9 @@ import html2text
 import play_scraper as play
 from config import Config
 import requests
+from app.models import Games,Apps
+from app import session
+import datetime
 
 logging.basicConfig(level=logging.INFO, filename='output.log', filemode='a', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%d-%b-%y %I:%M:%S %p')
 logging.info("Bot started successfully")
@@ -17,6 +20,62 @@ reddit = praw.Reddit(client_id=Config.client_id, client_secret=Config.client_sec
 subreddit = reddit.subreddit("+".join(Config.subreddit))
 logging.info("Watching /r/{} ...".format((",/r/").join(Config.subreddit)))
 logging.info("Waiting for comments...")
+
+
+def update_db(subreddit, result):
+    title = result['title']
+    link = result['url']
+    rating = result['score']
+    if result['free']is True:
+        price = 'Free'
+    else:
+        price = result['price']
+    if result['iap'] is True:
+        price += ' with IAP'
+    category_list_types = result['category']
+    category_list = []
+    for i in category_list_types:
+        if '_' in i:
+            in_list = i.split('_')
+            category_list.append(in_list[1].capitalize())
+        else:
+            category_list.append(i.capitalize())
+    category = ", ".join(category_list)
+    developer = result['developer']
+    if result['iap_range'] is None:
+        iap_range = 'NA'
+    else:
+        iap_range = " - ".join(result['iap_range'])
+    now = datetime.datetime.now()
+    month = now.strftime('%b %y')
+
+    if subreddit == 'AndroidGaming' or subreddit == 'sziyan_testing':
+        check_db = session.query(Games).filter_by(title = title).first()
+        if check_db is None: #game does not exist
+            game = Games(title=title, link=link,rating=rating,price=price,category=category,count=1,developer=developer,iap_range=iap_range, month=month)
+            session.add(game)
+            session.commit()
+            logging.info('New game {} added to database.'.format(title))
+            return 1
+        else: #game already exist
+            check_db.count += 1
+            session.commit()
+            return 1
+    elif subreddit == 'AndroidApps':
+        check_db = session.query(Apps).filter_by(title=title).first()
+        if check_db is None:
+            app = Apps(title=title, link=link,rating=rating,price=price,category=category,count=1,developer=developer,iap_range=iap_range, month=month)
+            session.add(app)
+            session.commit()
+            logging.info("New app {} added to database.".format(title))
+            return 1
+        else:
+            check_db.count+=1
+            session.commit()
+            return 1
+    else:
+        logging.warning("Invalid subreddit. This should no happen unless testing!")
+        return 0
 
 def sendtelegram(message):
     token = Config.token
@@ -63,6 +122,7 @@ for comments in subreddit.stream.comments(skip_existing=True):
             app_count = get_no_apps(link_me_requests)
             app_list = get_all_app_requests(link_me_requests)
             count = 1
+            result_list = []
             if app_count > 0:
                 logging.info("{} is searching for {} app(s) in /r/{}: {}".format(comments.author.name, app_count,comments.subreddit.display_name, ",".join(app_list)))
                 print("{} is searching for {} app(s): {}".format(comments.author.name, app_count, ",".join(app_list)))
@@ -99,6 +159,7 @@ for comments in subreddit.stream.comments(skip_existing=True):
                         msg = "**[{}]({})** | {}  | {} | {} downloads | [Search manually]({}) \n\n> {}".format(title,url,score,price,installs,search_manual,desc_output)
                     else:
                         msg = "[{}]({}) - {} - {} - [Search manually]({}) \n\n".format(title,url,score,price,search_manual)
+                    result_list.append(result)
                     count+=1
                     message+=msg
                 if message != "":
@@ -110,6 +171,10 @@ for comments in subreddit.stream.comments(skip_existing=True):
                 else:
                     logging.info("{} searched for an empty game.".format(comments.author.name))
                     continue
+                for result in result_list:
+                    update_db_result = update_db(comments.subreddit.display_name, result)
+                    if update_db_result is not 1:
+                        logging.warning('Updating of database failed.')
             else:
                 continue
         except praw.exceptions.APIException as api_exception:

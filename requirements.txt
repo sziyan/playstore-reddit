@@ -2,11 +2,14 @@ beautifulsoup4==4.8.2
 certifi==2019.11.28
 cffi==1.13.2
 chardet==3.0.4
+config==0.4.2
 cryptography==2.8
+decorator==4.4.1
 html2text==2019.9.26
 idna==2.8
 lxml==4.4.2
 Markdown==3.1.1
+pbr==5.4.4
 play-scraper==0.6.0
 praw==6.4.0
 prawcore==1.0.1
@@ -16,6 +19,10 @@ requests==2.22.0
 requests-futures==1.0.0
 six==1.13.0
 soupsieve==1.9.5
+SQLAlchemy==1.3.12
+sqlalchemy-migrate==0.13.0
+sqlparse==0.3.0
+Tempita==0.5.2
 update-checker==0.16
 urllib3==1.25.7
 websocket-client==0.57.0

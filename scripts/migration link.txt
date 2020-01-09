@@ -1,0 +1,1 @@
+https://sqlalchemy-migrate.readthedocs.io/en/latest/versioning.html#project-setup
