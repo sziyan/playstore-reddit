@@ -11,7 +11,7 @@ from config import Config
 import requests
 from app.models import Games,Apps
 from app import session
-import datetime
+from datetime import date, datetime
 
 logging.basicConfig(level=logging.INFO, filename='output.log', filemode='a', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%d-%b-%y %I:%M:%S %p')
 logging.info("Bot started successfully")
@@ -46,11 +46,13 @@ def update_db(subreddit, result):
         iap_range = 'NA'
     else:
         iap_range = " - ".join(result['iap_range'])
-    now = datetime.datetime.now()
-    month = now.strftime('%b %y')
+    now = datetime.now()
+
+    month = now.strftime('%b %Y')
 
     if subreddit == 'AndroidGaming' or subreddit == 'sziyan_testing':
-        check_db = session.query(Games).filter_by(title = title).first()
+        month_games = session.query(Games).filter_by(month=month)
+        check_db = month_games.filter_by(title = title).first()
         if check_db is None: #game does not exist
             game = Games(title=title, link=link,rating=rating,price=price,category=category,count=1,developer=developer,iap_range=iap_range, month=month)
             session.add(game)
@@ -62,14 +64,15 @@ def update_db(subreddit, result):
             session.commit()
             return 1
     elif subreddit == 'AndroidApps':
-        check_db = session.query(Apps).filter_by(title=title).first()
+        month_apps = session.query(Apps).filter_by(month=month)
+        check_db = month_apps.filter_by(title=title).first()
         if check_db is None:
             app = Apps(title=title, link=link,rating=rating,price=price,category=category,count=1,developer=developer,iap_range=iap_range, month=month)
             session.add(app)
             session.commit()
             logging.info("New app {} added to database.".format(title))
             return 1
-        else:
+        else: #apps already exists
             check_db.count+=1
             session.commit()
             return 1
@@ -109,8 +112,8 @@ def get_all_app_requests(linkme_requests):
     return apps_list
 
 for comments in subreddit.stream.comments(skip_existing=True):
-    #if comments.author.name == Config.username:
-    if comments.author.name == 'test':
+    if comments.author.name == Config.username:
+    #if comments.author.name == 'test':
         print("Same username as bot.")
         continue
     else:
@@ -163,7 +166,9 @@ for comments in subreddit.stream.comments(skip_existing=True):
                     count+=1
                     message+=msg
                 if message != "":
-                    message+="\n\n\n\n --- \n\n\n\n \n\nI am a new bot. Please help me by private messaging me any bugs you see. Thank You."
+                    message+="\n\n\n\n --- \n\n\n\n \n\nTo use me, type **linkme:** AppName. Seperate each search by a comma. \n\n " \
+                             "Please help me by private messaging me any feedbacks. \n\n" \
+                             "Thank You human."
                     comments.reply(message)
                     sendtelegram('<b>{}</b> searched for {} app(s) in <b>/r/{}</b> successfully.'.format(comments.author.name,app_count,comments.subreddit.display_name))
                     logging.info('{} completed app search successfully.'.format(comments.author.name))

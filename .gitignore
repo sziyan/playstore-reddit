@@ -3,3 +3,6 @@ venv/
 config.py
 output.log
 __pycache__/
+gplay.db
+test.py
+scripts/clear_comments.py

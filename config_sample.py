@@ -13,3 +13,4 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     token = 'token' #telegram bot token
     chat_id = 'chat_id' #telegram chat id
+    max_monthly = 5
