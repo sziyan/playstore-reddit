@@ -1,0 +1,9 @@
+venv/
+.idea/
+config.py
+output.log
+__pycache__/
+gplay.db
+test.py
+clear_comments.py
+monthly.log
