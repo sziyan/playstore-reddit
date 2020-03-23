@@ -43,7 +43,7 @@ def update_db(subreddit, result):
     month = now.strftime('%b %Y')
 
     try:
-        if subreddit.lower() == 'androidgaming':
+        if subreddit.lower() == 'androidgaming' or subreddit.lower() == 'gachagaming':
             month_games = session.query(Games).filter_by(month=month)
             check_db = month_games.filter_by(title = title).first()
             if check_db is None: #game does not exist
