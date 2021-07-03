@@ -107,7 +107,8 @@ def get_all_app_requests(linkme_requests):
             apps_list.append(item)
     return apps_list
 
-
+def get_gplay_url(app_id):
+    return 'https://play.google.com/store/apps/details?id={}'.format(app_id)
 
 logging.basicConfig(level=logging.INFO, filename='output.log', filemode='a', format='%(asctime)s %(levelname)s - %(message)s', datefmt='%d-%b-%y %I:%M:%S %p')
 logging.info("Bot started successfully")
@@ -122,7 +123,7 @@ logging.info("Waiting for comments...")
 
 try:
     for comments in subreddit.stream.comments(skip_existing=True):
-        if comments.author.name == Config.username:
+        if comments.author.name == Config.username: #this is to prevent looping comment bot replies to comment
         #if comments.author.name == 'test':
             print("Same username as bot.")
             continue
@@ -142,11 +143,13 @@ try:
                     msg = "You have searched for more than {} apps. I will only link to the first {} apps.\n\n".format(Config.max_apps, Config.max_apps)
                     message +=msg
                 for search in app_list:
+                    search_manual = 'https://play.google.com/store/search?q={}'.format(search)
                     if count > Config.max_apps:
                         continue
                     result = play.search(search,page=1, detailed=True)
                     if not result:
                         logging.info("{} search for {} returned no result.".format(comments.author.name,search))
+                        message+= 'I am unable to find {} - [Search manually]({}) \n\n'.format(search, search_manual)
                         continue
                     result = result[0]
                     title = result.get('title')
@@ -154,8 +157,9 @@ try:
                         score = "Early Access"
                     else:
                         score = result.get('score') + ' rating'
-                    url = result.get('url')
-                    search_manual = 'https://play.google.com/store/search?q={}'.format(search)
+                    #url = result.get('url')
+                    url = get_gplay_url(result.get('app_id'))
+                    # search_manual = 'https://play.google.com/store/search?q={}'.format(search)
                     if result.get('free') is True:
                         price = 'Free'
                     else:
