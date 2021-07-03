@@ -179,7 +179,7 @@ try:
                     count+=1
                     message+=msg
                 if message != "":
-                    message+="\n\n\n\n --- \n\n\n\n \n\n|[Feedback]({})|PunyDev|Lonerzboy|".format('https://www.reddit.com/message/compose?to=GooglePlay_LinksBot&subject=Feedback%20about%20bot&message=')
+                    message+="\n\n\n\n --- \n\n\n\n \n\n|[Feedback]({})|PunyDev|Lonerzboy|".format('https://www.reddit.com/message/compose?to=PunyDev&subject=Feedback%20about%20bot&message=')
                     comments.reply(message)
                     #sendtelegram('<b>{}</b> searched for {} app(s) in <b>/r/{}</b> successfully.'.format(comments.author.name,app_count,comments.subreddit.display_name))
                     logging.info('{} completed app search successfully.'.format(comments.author.name))
