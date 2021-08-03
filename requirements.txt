@@ -3,7 +3,7 @@ certifi==2019.11.28
 cffi==1.14.5
 chardet==3.0.4
 config==0.4.2
-cryptography==2.8
+cryptography==3.3.2
 decorator==4.4.1
 idna==2.8
 jellyfish==0.8.2
