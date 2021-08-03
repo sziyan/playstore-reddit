@@ -97,9 +97,9 @@ try:
                         desc = app.get_desc
                         desc = desc.split(" ")
                         desc = " ".join(desc[0:35]).replace("\n"," ") + " ..."
-                        msg = "**[{}]({})** | {}  | {} | {} | {} | {} {} \n\n> {}".format(app.get_name,url,rating,price,installs, size, play_pass,family, desc)
+                        msg = "**[{}]({})** | {} ⭐️ | {} | {} | {} | {} {} \n\n> {}".format(app.get_name,url,rating,price,installs, size, play_pass,family, desc)
                     else:
-                        msg = "**[{}]({})** - {} - {} - {} - {} {} {}\n\n".format(app.get_name,url,rating,price, installs, size, play_pass, family)
+                        msg = "**[{}]({})** - {} ⭐️ - {} - {} - {} {} {}\n\n".format(app.get_name,url,rating,price, installs, size, play_pass, family)
                     message+=msg
             if message != "":
                 message+="\n\n --- \n\n**Legend:** \n\n ▶️: Available in Play Pass \n\n 🏠: Eligble for Family Library \n\n |[Feedback]({})|PunyDev|".format('https://www.reddit.com/message/compose?to=PunyDev&subject=Feedback%20about%20AppStore%20bot&message=')
