@@ -7,7 +7,7 @@ cryptography==2.8
 decorator==4.4.1
 idna==2.8
 jellyfish==0.8.2
-lxml==4.4.2
+lxml==4.6.3
 Markdown==3.1.1
 pbr==5.4.4
 play-scraper==0.6.0
