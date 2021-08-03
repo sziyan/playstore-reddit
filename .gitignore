@@ -7,3 +7,5 @@ gplay.db
 test.py
 clear_comments.py
 monthly.log
+.gitignore
+test.html
