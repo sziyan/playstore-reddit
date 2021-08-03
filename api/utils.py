@@ -12,7 +12,6 @@ def get_app_link(search):
     url = 'https://play.google.com/store/search?q={}&c=apps'.format(urllib.parse.quote(search))
     index = 0
     search = search.lower()
-    predicted_app = ''
     result_list = []
     similarity_index = 99 #set to an arbituary high value so that prediction will start
     r = requests.get(url)

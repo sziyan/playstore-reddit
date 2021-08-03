@@ -84,7 +84,10 @@ try:
                     installs = app.get_installs
                     if app.get_iap is True: #contains IAP, change the output of price
                         price = '{} with IAP'.format(str(price))
-                    size = app.get_size
+                    if app.get_size.lower() == 'varies with device':
+                        size = app.get_size
+                    else:
+                        size = app.get_size + 'B'
                     if app.get_playpass is True:
                         play_pass = '▶️'
                     else:
@@ -93,13 +96,15 @@ try:
                         family = '🏠'
                     else:
                         family = ''
+                    ## Prepare message ##
+                    msg = "**[{}]({})** | {} ⭐️ | {} | {} downloads | {} | {} {} \n\n".format(app.get_name,url,rating,price, installs, size, play_pass, family)
                     if count == 1:
                         desc = app.get_desc
                         desc = desc.split(" ")
                         desc = " ".join(desc[0:35]).replace("\n"," ") + " ..."
-                        msg = "**[{}]({})** | {} ⭐️ | {} | {} | {} | {} {} \n\n> {}".format(app.get_name,url,rating,price,installs, size, play_pass,family, desc)
-                    else:
-                        msg = "**[{}]({})** - {} ⭐️ - {} - {} - {} {} {}\n\n".format(app.get_name,url,rating,price, installs, size, play_pass, family)
+                        msg+= "> {}".format(desc)
+                    # else:
+                    #     msg = "**[{}]({})** | {} ⭐️ | {} | {} downloads | {} | {} {} \n\n".format(app.get_name,url,rating,price, installs, size, play_pass, family)
                     message+=msg
             if message != "":
                 message+="\n\n --- \n\n**Legend:** \n\n ▶️: Available in Play Pass \n\n 🏠: Eligble for Family Library \n\n |[Feedback]({})|PunyDev|".format('https://www.reddit.com/message/compose?to=PunyDev&subject=Feedback%20about%20AppStore%20bot&message=')
