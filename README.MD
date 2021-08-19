@@ -1,5 +1,7 @@
 # Google Play Links Bot for Reddit
 
+**This bot is depreciated. Refer to [Linkme-reddit](https://github.com/sziyan/reddit-linkme) instead which is a rewrite of this code base with better search algorithm and functions.**
+
 This reddit bot monitors the configured subreddit(s) for any comments with `linkme` in the content.
 Any contents after `linkme` will be queried with Play Store for useful information.
 
